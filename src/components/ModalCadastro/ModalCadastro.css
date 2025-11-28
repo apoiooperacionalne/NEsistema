@@ -1,0 +1,274 @@
+/* ===== MODAL OVERLAY ===== */
+.Modal_Overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+}
+
+/* ===== MODAL BOX ===== */
+.Modal_Overlay .Modal_Content {
+    background: #ffffff;
+    border-radius: 16px;
+    width: 460px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== TITULO ===== */
+.Modal_Overlay .Modal_Content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #222;
+    font-size: 1.4rem;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 8px;
+}
+
+/* ===== FORM ===== */
+.Modal_Overlay .Modal_Content .Modal_Form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== GRID DE CAMPOS ===== */
+.Modal_Overlay .Modal_Content .Form_Grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+.Modal_Overlay .Modal_Content .Form_Grid .field-nome {
+    grid-column: 1 / 4;
+}
+.Modal_Overlay .Modal_Content .Form_Grid .field-tipo {
+    grid-column: 1 / 2;
+}
+.Modal_Overlay .Modal_Content .Form_Grid .field-documento {
+    grid-column: 2 / 3;
+}
+.Modal_Overlay .Modal_Content .Form_Grid .field-entrada {
+    grid-column: 3 / 4;
+}
+
+/* INPUTS */
+.Modal_Overlay .Modal_Content label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.1rem;
+}
+
+.Modal_Overlay .Modal_Content input[type="text"],
+.Modal_Overlay .Modal_Content input[type="time"],
+.Modal_Overlay .Modal_Content select {
+    margin-top: 6px;
+    padding: 8px 10px;
+    border: 1.8px solid #ccc;
+    border-radius: 8px;
+    transition: border 0.3s ease;
+    outline: none;
+    font-size: 1rem;
+}
+
+.Modal_Overlay .Modal_Content input:focus,
+.Modal_Overlay .Modal_Content select:focus {
+    border-color: var(--color-primary);
+}
+
+.Modal_Overlay .Modal_Content .readonly {
+    background-color: #f2f2f2;
+    color: #555;
+}
+
+/* ===== MOTIVOS ===== */
+.Modal_Overlay .Modal_Content .Motivo_Grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+
+.Modal_Overlay .Modal_Content .checkboxLabel {
+    background: var(--color-secondary);
+    border-radius: 10px;
+    border: #222 solid 1px;
+    padding: 10px 25px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.Modal_Overlay .Modal_Content .checkboxLabel:hover {
+    border-color: var(--color-primary);
+    background: #f2f0da;
+}
+
+/* ===== BOTÕES ===== */
+.Modal_Overlay .Modal_Content .Modal_Btns {
+    display: flex;
+    gap: 10px;
+}
+
+.Modal_Overlay .Modal_Content .Modal_Save_Btn,
+.Modal_Overlay .Modal_Content .Modal_Close_Btn {
+    padding: 10px 0;
+    font-weight: 300;
+    border: 1px solid;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+/* ===== BOTÃO SALVAR ===== */
+.Modal_Overlay .Modal_Content .Modal_Save_Btn {
+    flex: 3;
+    background-color: var(--color-text);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 1.1rem;
+}
+
+/* Hover troca cor e também troca o ícone */
+.Modal_Overlay .Modal_Content .Modal_Save_Btn:hover:not(:disabled) {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+}
+
+.Modal_Overlay .Modal_Content .Modal_Save_Btn:hover:not(:disabled) .save-icon {
+    content: url("../../assets/img/save_preto_btn.png");
+}
+
+/* Ícone normal */
+.save-icon {
+    width: 20px;
+    height: 20px;
+    transition: 0.2s ease;
+}
+
+/* Ícone bloqueado */
+.save-block-icon {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+    filter: grayscale(100%);
+}
+
+/* ===== BOTÃO DESABILITADO ===== */
+.Modal_Overlay .Modal_Content .Modal_Save_Btn:disabled {
+    background-color: #c9c9c9 !important;
+    color: #777 !important;
+    border-color: #aaa !important;
+    cursor: not-allowed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== BOTÃO CANCELAR ===== */
+.Modal_Overlay .Modal_Content .Modal_Close_Btn {
+    flex: 1;
+    background-color: #f1f1f1;
+}
+
+.Modal_Overlay .Modal_Content .Modal_Close_Btn:hover {
+    background-color: #ddd;
+}
+
+/* ===== CÂMERA ===== */
+.Modal_Overlay .Modal_Content .Camera_Section {
+    text-align: center;
+}
+
+.Modal_Overlay .Modal_Content .Camera_Btn {
+    background-color: var(--color-text);
+    color: var(--color-primary);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.7rem;
+    width: 100%;
+    display: flex;
+    height: 6vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.Modal_Overlay .Modal_Content .Camera_Btn img {
+    height: 5vh;
+}
+
+.Modal_Overlay .Modal_Content .Camera_Btn:hover {
+    background-color: var(--color-secondary);
+}
+
+.Modal_Overlay .Modal_Content .Camera_View video {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.Modal_Overlay .Modal_Content .Foto_Preview img {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 10px;
+    margin-top: 10px;
+    border: 2px solid var(--color-primary);
+}
+
+/* ===== DEPARTAMENTO CHECKBOX ===== */
+.Departamento_Grid {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.Departamento_Grid p {
+    margin-bottom: 4px;
+}
+
+.Departamento_Grid .checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    background: transparent;
+    padding: 0;
+    border: none;
+}
+
+.Departamento_Grid .checkboxLabel input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+}
+
+.Departamento_Grid .checkboxLabel {
+    font-size: 1rem;
+    color: #333;
+}
+
+.Motivo_Text textarea {
+    font-weight: 300;
+    font-size: 1rem;
+    padding: 1vh;
+    border-radius: 10px;
+    height: 5vh;
+}

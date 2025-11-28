@@ -1,0 +1,116 @@
+.navbinho {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--color-logo-bg);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.Nav_Logo {
+    height: 13.5vh;
+    position: absolute;
+    left: 2rem;
+    top: 1.5rem;
+    max-height: 90px;
+    z-index: 10;
+}
+
+.Nav_Links {
+    padding-left: 12vw;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    width: 50vw;
+}
+
+.Nav_Links::-webkit-scrollbar {
+    display: none;
+}
+
+.Nav_Link {
+    text-decoration: none;
+    color: var(--color-primary);
+    padding: 1.8rem 2rem;
+    transform: skew(12deg);
+    display: inline-block;
+    transition: 0.2s ease;
+    font-size: clamp(1rem, 1.5vw, 1.5rem);
+    white-space: nowrap;
+}
+
+.Nav_Link span {
+    display: inline-block;
+    transform: skew(-12deg);
+}
+
+.Nav_Link:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+}
+
+
+@media (max-width: 1024px) {
+    .Nav_Links {
+        padding-left: 14vw;
+    }
+
+    .Nav_Link {
+        padding: 1rem 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .Nav_Logo {
+        height: 10vh;
+        left: 1rem;
+        top: 1rem;
+    }
+
+    .Nav_Links {
+        padding-left: 20vw;
+    }
+
+    .Nav_Link {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+    }
+
+    .Logout_Btn {
+        right: 1rem;
+    }
+}
+
+#recepecao {
+    display: flex;
+}
+
+.Logout_Btn {
+    background-color: red;
+    border: none;
+    padding: 0.7em 1.2em;
+    border-radius: 50px;
+    box-shadow: 0 4px 0 #a30000, 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    position: absolute;
+    right: 2rem;
+    height: auto;
+    color: white;
+    font-weight: bold;
+    transition: all 0.15s ease-in-out;
+}
+
+.Logout_Btn:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #a30000, 0 2px 5px rgba(0, 0, 0, 0.15);
+    background-color: #d60000;
+}
+
+.Logout_Btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #a30000;
+    background-color: #b30000;
+}

@@ -1,0 +1,151 @@
+/* ===== OVERLAY ===== */
+.Modal_Overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+    z-index: 1500;
+}
+
+/* ===== CAIXA DO MODAL ===== */
+.ModalCamera_Content {
+    background: #ffffff;
+    border-radius: 16px;
+    width: 420px;
+    max-width: 92%;
+    padding: 26px 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    animation: fadeCamera 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@keyframes fadeCamera {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== TÍTULO ===== */
+.ModalCamera_Content h2 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    font-size: 1.3rem;
+    color: #222;
+    border-bottom: 2px solid var(--color-primary);
+}
+
+/* ===== VÍDEO DA CÂMERA ===== */
+.camera-video {
+    width: 100%;
+    border-radius: 12px;
+    border: 2px solid var(--color-primary);
+    margin-bottom: 15px;
+    background: #000;
+}
+
+/* ===== FOTO PREVIEW ===== */
+.preview-foto {
+    width: 100%;
+    border-radius: 12px;
+    border: 3px solid var(--color-primary);
+    object-fit: contain;
+    max-height: 55vh;
+    background: #000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    margin-bottom: 15px;
+}
+
+/* ===== BOTÃO CAPTURAR ===== */
+.btn-capturar {
+    width: 100%;
+    padding: 12px 0;
+    background: var(--color-text);
+    color: var(--color-primary);
+    border: none;
+    border-radius: 10px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.btn-capturar:hover {
+    background: var(--color-secondary);
+}
+
+/* ===== BOTÕES DO PREVIEW ===== */
+.preview-btns {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.btn-novamente,
+.btn-salvar {
+    flex: 1;
+    padding: 12px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+}
+
+/* Tirar novamente = cinza */
+.btn-novamente {
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    color: #444;
+}
+
+.btn-novamente:hover {
+    background: #e4e4e4;
+}
+
+/* Salvar = padrão do sistema */
+.btn-salvar {
+    background: var(--color-text);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    font-weight: 500;
+}
+
+.btn-salvar:hover {
+    background: var(--color-primary);
+    color: var(--color-text);
+}
+
+/* ===== BOTÃO FECHAR ===== */
+.btn-fechar {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px 0;
+    border-radius: 8px;
+    background: #eee;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-weight: 300;
+    transition: 0.25s ease;
+}
+
+.btn-fechar:hover {
+    background: #ddd;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 480px) {
+    .preview-foto {
+        max-height: 45vh;
+    }
+}

@@ -1,0 +1,184 @@
+/* 🔷 Fundo escuro e fixo */
+.Modal_Overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    padding: 20px;
+}
+
+/* 🔷 Container principal do modal */
+.Modal_Content {
+    background: #ffffff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 80vh; /* não passa da altura da tela */
+    padding: 28px 32px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    overflow-y: auto; /* rolagem interna quando necessário */
+    animation: fadeIn 0.3s ease;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) #f0f0f0;
+}
+
+/* 🔷 Scroll personalizado (para navegadores baseados em WebKit) */
+.Modal_Content::-webkit-scrollbar {
+    width: 8px;
+}
+.Modal_Content::-webkit-scrollbar-thumb {
+    background-color: var(--color-primary);
+    border-radius: 8px;
+}
+.Modal_Content::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+
+/* 🔷 Animação de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 🔷 Cabeçalho */
+.Modal_Content h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 8px;
+}
+
+/* 🔷 Formulário */
+.Modal_Form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.Form_Grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* 🔷 Campos */
+label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+input[type="text"],
+input[type="time"],
+input[type="date"] {
+    margin-top: 6px;
+    padding: 10px 12px;
+    border: 1.8px solid #ccc;
+    border-radius: 8px;
+    transition: border 0.3s ease;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+input:focus {
+    border-color: var(--color-primary);
+}
+
+.readonly {
+    background-color: #f2f2f2;
+    color: #666;
+}
+
+/* 🔷 Seção da foto */
+.Foto_Section {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.Foto_Section p {
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.Foto_Section img {
+    width: 100%;
+    max-width: 200px;
+    border-radius: 10px;
+    margin: 10px 0;
+    border: 2px solid var(--color-primary);
+    object-fit: cover;
+}
+
+/* 🔷 Botões */
+.Modal_Btns {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.Modal_Save_Btn,
+.Modal_Close_Btn {
+    flex: 1;
+    padding: 12px 0;
+    font-weight: 600;
+    border: 1px solid;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.Modal_Save_Btn {
+    background-color: var(--color-text);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.Modal_Save_Btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+}
+
+.Modal_Close_Btn {
+    background-color: #f1f1f1;
+    border-color: #ccc;
+    color: #333;
+}
+
+.Modal_Close_Btn:hover {
+    background-color: #ddd;
+}
+.saida-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-hora-atual {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-hora-atual:hover {
+    background-color: #0056b3;
+}
