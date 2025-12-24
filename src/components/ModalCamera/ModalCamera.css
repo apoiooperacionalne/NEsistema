@@ -46,7 +46,7 @@
     border-bottom: 2px solid var(--color-primary);
 }
 
-/* ===== VÍDEO DA CÂMERA ===== */
+/* ===== VÍDEO ===== */
 .camera-video {
     width: 100%;
     border-radius: 12px;
@@ -55,7 +55,7 @@
     background: #000;
 }
 
-/* ===== FOTO PREVIEW ===== */
+/* ===== PREVIEW ===== */
 .preview-foto {
     width: 100%;
     border-radius: 12px;
@@ -67,7 +67,7 @@
     margin-bottom: 15px;
 }
 
-/* ===== BOTÃO CAPTURAR ===== */
+/* ===== CAPTURAR ===== */
 .btn-capturar {
     width: 100%;
     padding: 12px 0;
@@ -81,15 +81,15 @@
 }
 
 .btn-capturar:hover {
-    background: var(--color-secondary);
+    background: var(--color-primary);
+    color: var(--color-text);
 }
 
-/* ===== BOTÕES DO PREVIEW ===== */
+/* ===== BOTÕES PREVIEW ===== */
 .preview-btns {
     display: flex;
     width: 100%;
     gap: 10px;
-    margin-top: 5px;
 }
 
 .btn-novamente,
@@ -99,10 +99,9 @@
     border-radius: 10px;
     cursor: pointer;
     font-size: 1rem;
-    transition: all 0.25s ease;
+    transition: 0.25s ease;
 }
 
-/* Tirar novamente = cinza */
 .btn-novamente {
     background: #f2f2f2;
     border: 1px solid #ccc;
@@ -113,7 +112,6 @@
     background: #e4e4e4;
 }
 
-/* Salvar = padrão do sistema */
 .btn-salvar {
     background: var(--color-text);
     color: var(--color-primary);
@@ -126,7 +124,7 @@
     color: var(--color-text);
 }
 
-/* ===== BOTÃO FECHAR ===== */
+/* ===== FECHAR ===== */
 .btn-fechar {
     width: 100%;
     margin-top: 15px;
@@ -135,7 +133,6 @@
     background: #eee;
     border: 1px solid #ccc;
     cursor: pointer;
-    font-weight: 300;
     transition: 0.25s ease;
 }
 
@@ -143,7 +140,7 @@
     background: #ddd;
 }
 
-/* ===== RESPONSIVIDADE ===== */
+/* ===== RESPONSIVO ===== */
 @media (max-width: 480px) {
     .preview-foto {
         max-height: 45vh;

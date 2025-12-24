@@ -3,13 +3,14 @@ import ModalCadastro from "../components/ModalCadastro/ModalCadastro.tsx";
 import ModalEditar from "../components/ModalEdit/ModalEdit.tsx";
 import "./css/ControleAcesso.css";
 import btn_add from "../../src/assets/img/btn_add.png";
+import sync_white from "../../src/assets/img/sync_white.png";
 
 type Visitante = {
     id: number;
     data: string;
     nome: string;
     documento: string;
-    departamento: string;
+    departamento: string | string[];
     motivo: string;
     entrada: string;
     saida: string;
@@ -28,8 +29,12 @@ export default function ControleAcesso() {
     const [linhasPorPaginaPendentes, setLinhasPorPaginaPendentes] = useState(5);
     const [linhasPorPaginaConcluidos, setLinhasPorPaginaConcluidos] = useState(5);
 
+    const [syncLoading, setSyncLoading] = useState(false);
+
     const carregarVisitantes = async () => {
         try {
+            setSyncLoading(true);
+
             const hoje = new Date().toISOString().split("T")[0];
             const res = await fetch(`http://localhost:3001/visitantes?data=${hoje}`);
             const data = await res.json();
@@ -43,6 +48,8 @@ export default function ControleAcesso() {
             setVisitantes(ordenados);
         } catch (err) {
             console.error("Erro ao carregar visitantes:", err);
+        } finally {
+            setSyncLoading(false);
         }
     };
 
@@ -61,32 +68,41 @@ export default function ControleAcesso() {
     const pendentes = visitantes.filter(v => v.saida === "00:00:00");
     const concluidos = visitantes.filter(v => v.saida !== "00:00:00");
 
-    // Paginação PENDENTES — CORRIGIDO
+    // Paginação PENDENTES
     const totalPaginasPendentes = Math.max(
         1,
         Math.ceil(pendentes.length / linhasPorPaginaPendentes)
     );
 
     const inicioPendentes = (paginaPendentes - 1) * linhasPorPaginaPendentes;
-    const pendentesPagina = pendentes.slice(inicioPendentes, inicioPendentes + linhasPorPaginaPendentes);
+    const pendentesPagina = pendentes.slice(
+        inicioPendentes,
+        inicioPendentes + linhasPorPaginaPendentes
+    );
 
-    // Paginação CONCLUÍDOS — CORRIGIDO
+    // Paginação CONCLUÍDOS
     const totalPaginasConcluidos = Math.max(
         1,
         Math.ceil(concluidos.length / linhasPorPaginaConcluidos)
     );
 
     const inicioConcluidos = (paginaConcluidos - 1) * linhasPorPaginaConcluidos;
-    const concluidosPagina = concluidos.slice(inicioConcluidos, inicioConcluidos + linhasPorPaginaConcluidos);
+    const concluidosPagina = concluidos.slice(
+        inicioConcluidos,
+        inicioConcluidos + linhasPorPaginaConcluidos
+    );
     // ------------------------------
 
-    // FUNÇÃO para gerar linhas especiais (altura fixa)
-    const renderLinhasFixas = (dadosPagina: Visitante[], tipo: "pendentes" | "concluidos") => {
-        const totalLinhas = tipo === "pendentes"
-            ? linhasPorPaginaPendentes
-            : linhasPorPaginaConcluidos;
+    // Renderização das linhas fixas
+    const renderLinhasFixas = (
+        dadosPagina: Visitante[],
+        tipo: "pendentes" | "concluidos"
+    ) => {
+        const totalLinhas =
+            tipo === "pendentes"
+                ? linhasPorPaginaPendentes
+                : linhasPorPaginaConcluidos;
 
-        // Caso NÃO tenha nenhum registro → linha única grande
         if (dadosPagina.length === 0) {
             return (
                 <tr className="linha-sem-registro unica">
@@ -97,28 +113,32 @@ export default function ControleAcesso() {
             );
         }
 
-        // Renderiza as linhas reais
         const linhas = dadosPagina.map((v) => (
-            <tr key={v.id} className="linha-clickavel" onClick={() => abrirModalEditar(v)}>
+            <tr
+                key={v.id}
+                className="linha-clickavel"
+                onClick={() => abrirModalEditar(v)}
+            >
                 <td>{v.data}</td>
                 <td>{v.nome}</td>
                 <td>{v.documento}</td>
-                <td>{v.departamento}</td>
+                <td>
+                    {Array.isArray(v.departamento)
+                        ? v.departamento.join(", ")
+                        : v.departamento}
+                </td>
                 <td>{v.motivo}</td>
                 <td>{v.entrada}</td>
                 <td>{v.saida}</td>
             </tr>
         ));
 
-        // Renderiza uma única linha vazia se faltar completar as 5
         if (dadosPagina.length < totalLinhas) {
-            const linhasRestantes = totalLinhas - dadosPagina.length;
-
             linhas.push(
                 <tr
                     key={`espaco-${tipo}`}
                     className="linha-vazia-espaco"
-                    style={{ height: `${linhasRestantes * 40}px` }}
+                    style={{ height: `${(totalLinhas - dadosPagina.length) * 40}px` }}
                 >
                     <td colSpan={7}></td>
                 </tr>
@@ -130,17 +150,32 @@ export default function ControleAcesso() {
 
     return (
         <div className="recepecao-container">
-
             <div className="controle">
                 <h2 style={{ fontSize: "2rem" }}>Controle de Acesso</h2>
+
+                <button
+                    className={`Btn_Sync ${syncLoading ? "loading" : ""}`}
+                    onClick={carregarVisitantes}
+                    disabled={syncLoading}
+                    title="Sincronizar"
+                >
+                    <img
+                        src={sync_white}
+                        alt="Sincronizar"
+                        className="Btn_Sync_Img"
+                    />
+                </button>
+
                 <button className="Btn_Add" onClick={() => setShowCadastro(true)}>
                     <img src={btn_add} alt="Adicionar" className="Btn_Add_Img" />
                 </button>
             </div>
 
-            {/* TABELA PENDENTES */}
+            {/* ===================== PENDENTES ===================== */}
             <div>
-                <h3 style={{ margin: "2rem 0rem 0rem 0rem", fontSize: "1.5rem" }}>Pendentes</h3>
+                <h3 style={{ margin: "2rem 0 0 0", fontSize: "1.5rem" }}>
+                    Pendentes ({pendentes.length})
+                </h3>
 
                 <table>
                     <thead>
@@ -154,11 +189,9 @@ export default function ControleAcesso() {
                             <th>Saída</th>
                         </tr>
                     </thead>
-
                     <tbody>{renderLinhasFixas(pendentesPagina, "pendentes")}</tbody>
                 </table>
 
-                {/* Paginação */}
                 <div className="paginacao-container">
                     <div className="select-container">
                         <label>Mostrar: </label>
@@ -170,9 +203,9 @@ export default function ControleAcesso() {
                             }}
                         >
                             <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={20}>20</option>
-                            <option value={50}>50</option>
+                            <option value={10} disabled={pendentes.length < 10}>10</option>
+                            <option value={20} disabled={pendentes.length < 20}>20</option>
+                            <option value={50} disabled={pendentes.length < 50}>50</option>
                         </select>
                         <span> linhas por página</span>
                     </div>
@@ -185,7 +218,9 @@ export default function ControleAcesso() {
                             ◀
                         </button>
 
-                        <span>Página {paginaPendentes} de {totalPaginasPendentes}</span>
+                        <span>
+                            Página {paginaPendentes} de {totalPaginasPendentes}
+                        </span>
 
                         <button
                             disabled={paginaPendentes === totalPaginasPendentes}
@@ -197,11 +232,11 @@ export default function ControleAcesso() {
                 </div>
             </div>
 
-            {/* ------------------------------ */}
-            {/* TABELA CONCLUÍDOS */}
-            {/* ------------------------------ */}
+            {/* ===================== CONCLUÍDOS ===================== */}
             <div>
-                <h3 style={{ margin: "2rem 0rem 0rem 0rem", fontSize: "1.5rem" }}>Concluídos</h3>
+                <h3 style={{ margin: "2rem 0 0 0", fontSize: "1.5rem" }}>
+                    Concluídos ({concluidos.length})
+                </h3>
 
                 <table>
                     <thead>
@@ -215,11 +250,9 @@ export default function ControleAcesso() {
                             <th>Saída</th>
                         </tr>
                     </thead>
-
                     <tbody>{renderLinhasFixas(concluidosPagina, "concluidos")}</tbody>
                 </table>
 
-                {/* Paginação */}
                 <div className="paginacao-container">
                     <div className="select-container">
                         <label>Mostrar: </label>
@@ -231,9 +264,9 @@ export default function ControleAcesso() {
                             }}
                         >
                             <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={20}>20</option>
-                            <option value={50}>50</option>
+                            <option value={10} disabled={concluidos.length < 10}>10</option>
+                            <option value={20} disabled={concluidos.length < 20}>20</option>
+                            <option value={50} disabled={concluidos.length < 50}>50</option>
                         </select>
                         <span> linhas por página</span>
                     </div>
@@ -246,7 +279,9 @@ export default function ControleAcesso() {
                             ◀
                         </button>
 
-                        <span>Página {paginaConcluidos} de {totalPaginasConcluidos}</span>
+                        <span>
+                            Página {paginaConcluidos} de {totalPaginasConcluidos}
+                        </span>
 
                         <button
                             disabled={paginaConcluidos === totalPaginasConcluidos}
@@ -256,28 +291,26 @@ export default function ControleAcesso() {
                         </button>
                     </div>
                 </div>
-
-                {/* BOTÃO ADICIONAR */}
-
-                {/* MODAIS */}
-                {showCadastro && (
-                    <ModalCadastro
-                        onClose={() => setShowCadastro(false)}
-                        onSave={carregarVisitantes}
-                    />
-                )}
-
-                {showEditar && visitanteSelecionado && (
-                    <ModalEditar
-                        visitante={visitanteSelecionado}
-                        onClose={() => {
-                            setShowEditar(false);
-                            setVisitanteSelecionado(null);
-                        }}
-                        onSave={carregarVisitantes}
-                    />
-                )}
             </div>
+
+            {/* ===================== MODAIS ===================== */}
+            {showCadastro && (
+                <ModalCadastro
+                    onClose={() => setShowCadastro(false)}
+                    onSave={carregarVisitantes}
+                />
+            )}
+
+            {showEditar && visitanteSelecionado && (
+                <ModalEditar
+                    visitante={visitanteSelecionado}
+                    onClose={() => {
+                        setShowEditar(false);
+                        setVisitanteSelecionado(null);
+                    }}
+                    onSave={carregarVisitantes}
+                />
+            )}
         </div>
     );
 }

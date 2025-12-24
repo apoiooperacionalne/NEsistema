@@ -7,8 +7,6 @@
     font-family: Arial, sans-serif;
     text-align: center;
     min-height: 60vh;
-
-    /* IMPORTANTE: permite que o botão absoluto fique relativo a este container */
     position: relative;
 }
 
@@ -96,7 +94,6 @@ button.foto-btn {
     justify-content: space-between;
     align-items: center;
     margin-top: 10px;
-    padding: 0px 0px 0px 0px;
     font-size: 14px;
 }
 
@@ -120,6 +117,14 @@ button.foto-btn {
     color: white;
     border-radius: 4px;
     cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.botoes-paginacao button:not(:disabled):hover {
+    background-color: var(--color-text);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
 }
 
 .botoes-paginacao button:disabled {
@@ -136,12 +141,12 @@ tbody tr td {
 }
 
 .linha-vazia td {
-    height: 32px !important;
+    height: 22.5px !important;
     background-color: #fafafa;
 }
 
 .linha-sem-registro td {
-    height: calc(32px * 5);
+    height: calc(22.5px * 5);
     text-align: center;
     vertical-align: middle;
     font-size: 1rem;
@@ -150,22 +155,22 @@ tbody tr td {
 }
 
 /* ============================= */
-/*         BOTÃO ADICIONAR       */
+/*         BOTÕES SUPERIORES     */
 /* ============================= */
 
+/* BOTÃO ADD */
 .Btn_Add {
     border: none;
     background-color: var(--color-primary);
     cursor: pointer;
     border-radius: 100px;
     padding: 0.4em 0.6em;
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25),
+                0 2px 6px rgba(0, 0, 0, 0.15);
     transition: all 0.15s ease-in-out;
-
     position: absolute;
     top: 25px;
     right: 20px;
-
     z-index: 10;
 }
 
@@ -174,98 +179,63 @@ tbody tr td {
     transition: transform 0.15s ease;
 }
 
+/* BOTÃO SYNC — MESMA ESTÉTICA DO ADD */
+.Btn_Sync {
+    border: none;
+    background-color: var(--color-primary);
+    cursor: pointer;
+    border-radius: 100px;
+    padding: 0.4em 0.6em;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25),
+                0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: all 0.15s ease-in-out;
+    position: absolute;
+    top: 25px;
+    right: 95px; /* ← FICA À ESQUERDA DO ADD */
+    z-index: 10;
+}
+
+.Btn_Sync_Img {
+    height: 50px;
+    transition: transform 0.30s ease;
+}
+
+.Btn_Sync:hover .Btn_Sync_Img {
+    transform: rotate(-180deg);
+}
+
 /* ============================= */
 /*   RESPONSIVIDADE POR LARGURA  */
 /* ============================= */
 
-@media (max-width: 1600px) { 
-    th, td { font-size: 14px; } 
+@media (max-width: 1600px) {
+    th, td { font-size: 14px; }
     .recepecao-container { min-height: 70vh; }
+    .Btn_Add_Img,
+    .Btn_Sync_Img { height: 48px; }
 }
 
-@media (max-width: 1440px) { 
-    table th, td { padding: 6px; } 
-    th, td { font-size: 13px; } 
+@media (max-width: 1440px) {
+    table th, td { padding: 6px; }
+    th, td { font-size: 13px; }
+    .Btn_Add_Img,
+    .Btn_Sync_Img { height: 44px; }
 }
 
 /* ============================= */
-/*    RESPONSIVIDADE POR ALTURA   */
+/*    RESPONSIVIDADE POR ALTURA  */
 /* ============================= */
-
-@media (min-height: 1440px) {
-    th, td { font-size: 18px; }
-    tbody tr td { height: 2.8vh; }
-    .recepecao-container h2 { font-size: 3.2rem; }
-    .Btn_Add_Img { height: 65px; }
-}
-
-@media (min-height: 1200px) {
-    th, td { font-size: 17px; }
-    tbody tr td { height: 2.6vh; }
-    .Btn_Add_Img { height: 60px; }
-}
 
 @media (min-height: 1080px) {
     th, td { font-size: 16px; }
     tbody tr td { height: 2.4vh; }
-    .recepecao-container h2 { font-size: 3rem; }
-    .Btn_Add_Img { height: 55px; }
-}
-
-@media (max-height: 900px) {
-    th, td { font-size: 13px; padding: 6px; }
-    tbody tr td { height: 1.8vh; }
-    .Btn_Add_Img { height: 45px; }
-}
-
-@media (max-height: 800px) {
-    th, td { font-size: 12px; }
-    tbody tr td { height: 1.6vh; }
-    .recepecao-container h2 { font-size: 2rem; }
-    .Btn_Add_Img { height: 40px; }
+    .Btn_Add_Img,
+    .Btn_Sync_Img { height: 55px; }
 }
 
 @media (max-height: 768px) {
     th, td { font-size: 11px; padding: 4px; }
     tbody tr td { height: 1.4vh; }
-    .Btn_Add_Img { height: 38px; }
-}
-
-@media (max-height: 700px) {
-    th, td { font-size: 10.5px; padding: 3px; }
-    tbody tr td { height: 1.2vh; }
-    .Btn_Add_Img { height: 34px; }
-    .recepecao-container h2 { font-size: 1.6rem; }
-}
-
-@media (max-height: 600px) {
-    th, td { font-size: 9.5px; padding: 2px; }
-    tbody tr td { height: 1vh; }
-    .Btn_Add_Img { height: 32px; }
-}
-
-/* =============================================================== */
-/*   RESPONSIVIDADE COMBINADA (ALTURA + LARGURA AO MESMO TEMPO)    */
-/* =============================================================== */
-
-@media (max-width: 1366px) and (max-height: 768px) {
-    th, td { font-size: 12px; padding: 4px; }
-    tbody tr td { height: 1.5vh; }
-}
-
-@media (max-width: 1280px) and (max-height: 720px) {
-    th, td { font-size: 11px; }
-    tbody tr td { height: 1.4vh; }
-}
-
-@media (min-width: 1900px) and (min-height: 1000px) {
-    th, td { font-size: 16px; }
-    tbody tr td { height: 2.4vh; }
-    .Btn_Add_Img { height: 55px; }
-}
-
-@media (min-width: 2560px) and (min-height: 1400px) {
-    th, td { font-size: 18px; }
-    tbody tr td { height: 2.8vh; }
-    .Btn_Add_Img { height: 65px; }
+    .Btn_Add_Img,
+    .Btn_Sync_Img { height: 38px; }
 }

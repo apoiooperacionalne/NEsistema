@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import "./ModalCadastro.css";
 
 import camera_marelo_btn from "../../assets/img/camera_marelo_btn.png";
+import camera_preto_btn from "../../assets/img/camera_preto_btn.png";
 import save_marelo_btn from "../../assets/img/save_marelo_btn.png";
+import save_preto_btn from "../../assets/img/save_preto_btn.png";
 import block from "../../assets/img/block.png";
 
 import ModalCamera from "../ModalCamera/ModalCamera";
@@ -26,19 +28,17 @@ export default function ModalCadastro({ onClose, onSave }) {
 
     const [formData, setFormData] = useState({
         nome: "",
+        tipoDocumento: "Mat",
         documento: "",
-        departamento: "",
+        departamento: [] as string[],
         motivo: "",
         entrada: "",
-        foto: "" // recebe apenas o base64, sem preview no modal pai
+        foto: ""
     });
 
-    const [tipoDocumento, setTipoDocumento] = useState("Mat");
     const [documentoMascara, setDocumentoMascara] = useState("");
-
     const [isSaving, setIsSaving] = useState(false);
     const [formValid, setFormValid] = useState(false);
-
     const [modalCameraAberto, setModalCameraAberto] = useState(false);
 
     const isSaveDisabled = !formValid || isSaving;
@@ -50,27 +50,23 @@ export default function ModalCadastro({ onClose, onSave }) {
 
     const departamentosLista = ["RH", "DP", "ST", "OP", "ADM"];
 
-    const handleDepartamentoChange = (dep) => {
-        setFormData((prev) => {
-            const selecionados = prev.departamento.split(", ").filter(Boolean);
-            const jaTem = selecionados.includes(dep);
-
-            const novos = jaTem
-                ? selecionados.filter((d) => d !== dep)
-                : [...selecionados, dep];
-
-            return { ...prev, departamento: novos.join(", ") };
-        });
+    const handleDepartamentoChange = (dep: string) => {
+        setFormData((prev) => ({
+            ...prev,
+            departamento: prev.departamento.includes(dep)
+                ? prev.departamento.filter((d) => d !== dep)
+                : [...prev.departamento, dep]
+        }));
     };
 
-    const aplicarMascara = (valor) => {
-        let somenteNumeros = valor.replace(/\D/g, "");
+    const aplicarMascara = (valor: string) => {
+        const somenteNumeros = valor.replace(/\D/g, "");
 
-        if (tipoDocumento === "Mat") {
+        if (formData.tipoDocumento === "Mat") {
             return somenteNumeros.slice(0, 6);
         }
 
-        if (tipoDocumento === "CPF") {
+        if (formData.tipoDocumento === "CPF") {
             return somenteNumeros
                 .slice(0, 11)
                 .replace(/(\d{3})(\d)/, "$1.$2")
@@ -78,7 +74,7 @@ export default function ModalCadastro({ onClose, onSave }) {
                 .replace(/(\d{3})(\d{2})$/, "$1-$2");
         }
 
-        if (tipoDocumento === "RG") {
+        if (formData.tipoDocumento === "RG") {
             return somenteNumeros
                 .slice(0, 7)
                 .replace(/(\d{1})(\d)/, "$1.$2")
@@ -88,7 +84,7 @@ export default function ModalCadastro({ onClose, onSave }) {
         return valor;
     };
 
-    const handleDocumento = (e) => {
+    const handleDocumento = (e: React.ChangeEvent<HTMLInputElement>) => {
         const valorDigitado = e.target.value;
         const valorMascara = aplicarMascara(valorDigitado);
 
@@ -99,7 +95,9 @@ export default function ModalCadastro({ onClose, onSave }) {
         });
     };
 
-    const handleChange = (e) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
@@ -108,15 +106,15 @@ export default function ModalCadastro({ onClose, onSave }) {
         const valid =
             formData.nome.trim() &&
             formData.documento.trim() &&
-            formData.departamento.trim() &&
+            formData.departamento.length > 0 &&
             formData.motivo.trim() &&
             formData.entrada.trim();
 
-        setFormValid(valid);
+        setFormValid(!!valid);
     }, [formData]);
 
     // enviar
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isSaveDisabled) return;
 
@@ -129,15 +127,16 @@ export default function ModalCadastro({ onClose, onSave }) {
             saida: "00:00:00"
         };
 
+        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
         try {
-            const response = await fetch(
-                import.meta.env.VITE_API_URL + "/visitantes",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(visitantePronto)
-                }
-            );
+            const response = await fetch(`${API_URL}/visitantes`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(visitantePronto)
+            });
 
             if (response.ok) {
                 alert("Visitante cadastrado com sucesso!");
@@ -146,7 +145,7 @@ export default function ModalCadastro({ onClose, onSave }) {
             } else {
                 alert("Erro ao cadastrar visitante.");
             }
-        } catch (error) {
+        } catch {
             alert("Falha ao conectar ao servidor.");
         }
 
@@ -177,11 +176,14 @@ export default function ModalCadastro({ onClose, onSave }) {
                         <label className="field-tipo">
                             Tipo de Documento:
                             <select
-                                value={tipoDocumento}
+                                value={formData.tipoDocumento}
                                 onChange={(e) => {
-                                    setTipoDocumento(e.target.value);
                                     setDocumentoMascara("");
-                                    setFormData({ ...formData, documento: "" });
+                                    setFormData({
+                                        ...formData,
+                                        tipoDocumento: e.target.value,
+                                        documento: ""
+                                    });
                                 }}
                             >
                                 <option value="Mat">Mat</option>
@@ -212,7 +214,6 @@ export default function ModalCadastro({ onClose, onSave }) {
                         </label>
                     </div>
 
-                    {/* DEPARTAMENTOS */}
                     <div>
                         <p><strong>Departamentos:</strong></p>
                         <div className="Departamento_Grid">
@@ -229,7 +230,6 @@ export default function ModalCadastro({ onClose, onSave }) {
                         </div>
                     </div>
 
-                    {/* MOTIVO */}
                     <label className="Motivo_Text">
                         Motivo da Entrada:
                         <textarea
@@ -242,37 +242,41 @@ export default function ModalCadastro({ onClose, onSave }) {
                         />
                     </label>
 
-                    {/* Botão de foto */}
-                    <div className="Camera_Section">
+                    {/* BOTÕES DE AÇÃO — PADRÃO DO MODAL EDITAR */}
+                    <div className="Action_Buttons">
                         <button
                             type="button"
-                            className="Camera_Btn"
+                            className="Action_Btn camera-btn"
                             onClick={() => setModalCameraAberto(true)}
                         >
-                            <img src={camera_marelo_btn} alt="Foto" />
-                            <p>Foto</p>
+                            <img src={camera_preto_btn} className="icon-default" />
+                            <img src={camera_marelo_btn} className="icon-hover" />
+                            <span>Foto</span>
                         </button>
                     </div>
 
-                    {/* BOTÕES */}
                     <div className="Modal_Btns">
-
                         <button
                             type="submit"
                             className="Modal_Save_Btn"
                             disabled={isSaveDisabled}
                         >
                             {isSaveDisabled ? (
-                                <img src={block} alt="Bloqueado" className="block-icon" />
+                                <img src={block} />
                             ) : (
                                 <>
                                     <span>Salvar</span>
-                                    <img src={save_marelo_btn} alt="Salvar" className="save-icon" />
+                                    <img src={save_marelo_btn} className="icon-default" />
+                                    <img src={save_preto_btn} className="icon-hover" />
                                 </>
                             )}
                         </button>
 
-                        <button type="button" className="Modal_Close_Btn" onClick={onClose}>
+                        <button
+                            type="button"
+                            className="Modal_Close_Btn"
+                            onClick={onClose}
+                        >
                             Cancelar
                         </button>
                     </div>
@@ -280,7 +284,6 @@ export default function ModalCadastro({ onClose, onSave }) {
                 </form>
             </div>
 
-            {/* Modal de Câmera */}
             {modalCameraAberto && (
                 <ModalCamera
                     fotoAtual={formData.foto}
