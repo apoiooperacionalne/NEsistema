@@ -8,6 +8,7 @@ import save_preto_btn from "../../assets/img/save_preto_btn.png";
 import block from "../../assets/img/block.png";
 
 import ModalCamera from "../ModalCamera/ModalCamera";
+import Alerta from "../AlertComponent/Alerta";
 
 export default function ModalCadastro({ onClose, onSave }) {
 
@@ -40,6 +41,12 @@ export default function ModalCadastro({ onClose, onSave }) {
     const [isSaving, setIsSaving] = useState(false);
     const [formValid, setFormValid] = useState(false);
     const [modalCameraAberto, setModalCameraAberto] = useState(false);
+
+    // 🔔 ALERTA
+    const [alerta, setAlerta] = useState<{
+        message: string;
+        type: "success" | "error" | "warning" | "info";
+    } | null>(null);
 
     const isSaveDisabled = !formValid || isSaving;
 
@@ -139,161 +146,191 @@ export default function ModalCadastro({ onClose, onSave }) {
             });
 
             if (response.ok) {
-                alert("Visitante cadastrado com sucesso!");
+                setAlerta({
+                    message: "Visitante cadastrado com sucesso!",
+                    type: "success"
+                });
+
                 onSave && onSave();
-                onClose();
+
+                setTimeout(() => {
+                    onClose();
+                }, 500);
             } else {
-                alert("Erro ao cadastrar visitante.");
+                setAlerta({
+                    message: "Erro ao cadastrar visitante.",
+                    type: "error"
+                });
             }
         } catch {
-            alert("Falha ao conectar ao servidor.");
+            setAlerta({
+                message: "Falha ao conectar ao servidor.",
+                type: "error"
+            });
         }
 
         setIsSaving(false);
     };
 
     return (
-        <div className="Modal_Overlay" onClick={() => !modalCameraAberto && onClose()}>
-            <div className="Modal_Content" onClick={(e) => e.stopPropagation()}>
-                <h2>Cadastro de Visitante</h2>
-
-                <form onSubmit={handleSubmit} className="Modal_Form">
-
-                    <div className="Form_Grid">
-
-                        <label className="field-nome">
-                            Nome:
-                            <input
-                                type="text"
-                                name="nome"
-                                value={formData.nome}
-                                onChange={handleChange}
-                                required
-                                placeholder="Nome completo"
-                            />
-                        </label>
-
-                        <label className="field-tipo">
-                            Tipo de Documento:
-                            <select
-                                value={formData.tipoDocumento}
-                                onChange={(e) => {
-                                    setDocumentoMascara("");
-                                    setFormData({
-                                        ...formData,
-                                        tipoDocumento: e.target.value,
-                                        documento: ""
-                                    });
-                                }}
-                            >
-                                <option value="Mat">Mat</option>
-                                <option value="CPF">CPF</option>
-                                <option value="RG">RG</option>
-                            </select>
-                        </label>
-
-                        <label className="field-documento">
-                            Documento:
-                            <input
-                                type="text"
-                                value={documentoMascara}
-                                onChange={handleDocumento}
-                                required
-                            />
-                        </label>
-
-                        <label className="field-entrada">
-                            Horário de Entrada:
-                            <input
-                                type="time"
-                                name="entrada"
-                                value={formData.entrada}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
-                    </div>
-
-                    <div>
-                        <p><strong>Departamentos:</strong></p>
-                        <div className="Departamento_Grid">
-                            {departamentosLista.map((dep) => (
-                                <label key={dep} className="checkboxLabel">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.departamento.includes(dep)}
-                                        onChange={() => handleDepartamentoChange(dep)}
-                                    />
-                                    {dep}
-                                </label>
-                            ))}
-                        </div>
-                    </div>
-
-                    <label className="Motivo_Text">
-                        Motivo da Entrada:
-                        <textarea
-                            name="motivo"
-                            rows={3}
-                            placeholder="Descreva o motivo da entrada"
-                            value={formData.motivo}
-                            onChange={handleChange}
-                            required
-                        />
-                    </label>
-
-                    {/* BOTÕES DE AÇÃO — PADRÃO DO MODAL EDITAR */}
-                    <div className="Action_Buttons">
-                        <button
-                            type="button"
-                            className="Action_Btn camera-btn"
-                            onClick={() => setModalCameraAberto(true)}
-                        >
-                            <img src={camera_preto_btn} className="icon-default" />
-                            <img src={camera_marelo_btn} className="icon-hover" />
-                            <span>Foto</span>
-                        </button>
-                    </div>
-
-                    <div className="Modal_Btns">
-                        <button
-                            type="submit"
-                            className="Modal_Save_Btn"
-                            disabled={isSaveDisabled}
-                        >
-                            {isSaveDisabled ? (
-                                <img src={block} />
-                            ) : (
-                                <>
-                                    <span>Salvar</span>
-                                    <img src={save_marelo_btn} className="icon-default" />
-                                    <img src={save_preto_btn} className="icon-hover" />
-                                </>
-                            )}
-                        </button>
-
-                        <button
-                            type="button"
-                            className="Modal_Close_Btn"
-                            onClick={onClose}
-                        >
-                            Cancelar
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-
-            {modalCameraAberto && (
-                <ModalCamera
-                    fotoAtual={formData.foto}
-                    onClose={() => setModalCameraAberto(false)}
-                    onCapture={(fotoDataURL) => {
-                        setFormData((p) => ({ ...p, foto: fotoDataURL }));
-                        setModalCameraAberto(false);
-                    }}
+        <>
+            {/* 🔔 ALERTA */}
+            {alerta && (
+                <Alerta
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={() => setAlerta(null)}
                 />
             )}
-        </div>
+
+            <div className="Modal_Overlay" onClick={() => !modalCameraAberto && onClose()}>
+                <div className="Modal_Content" onClick={(e) => e.stopPropagation()}>
+                    <h2>Cadastro de Visitante</h2>
+
+                    <form onSubmit={handleSubmit} className="Modal_Form">
+
+                        <div className="Form_Grid">
+
+                            <label className="field-nome">
+                                Nome:
+                                <input
+                                    type="text"
+                                    name="nome"
+                                    value={formData.nome}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Nome completo"
+                                />
+                            </label>
+
+                            <label className="field-tipo">
+                                Tipo de Documento:
+                                <select
+                                    value={formData.tipoDocumento}
+                                    onChange={(e) => {
+                                        setDocumentoMascara("");
+                                        setFormData({
+                                            ...formData,
+                                            tipoDocumento: e.target.value,
+                                            documento: ""
+                                        });
+                                    }}
+                                >
+                                    <option value="Mat">Mat</option>
+                                    <option value="CPF">CPF</option>
+                                    <option value="RG">RG</option>
+                                </select>
+                            </label>
+
+                            <label className="field-documento">
+                                Documento:
+                                <input
+                                    type="text"
+                                    value={documentoMascara}
+                                    onChange={handleDocumento}
+                                    required
+                                />
+                            </label>
+
+                            <label className="field-entrada">
+                                Horário de Entrada:
+                                <input
+                                    type="time"
+                                    name="entrada"
+                                    value={formData.entrada}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </label>
+                        </div>
+
+                        <div>
+                            <p><strong>Departamentos:</strong></p>
+                            <div className="Departamento_Grid">
+                                {departamentosLista.map((dep) => (
+                                    <label key={dep} className="checkboxLabel">
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.departamento.includes(dep)}
+                                            onChange={() => handleDepartamentoChange(dep)}
+                                        />
+                                        {dep}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <label className="Motivo_Text">
+                            Motivo da Entrada:
+                            <textarea
+                                name="motivo"
+                                rows={3}
+                                placeholder="Descreva o motivo da entrada"
+                                value={formData.motivo}
+                                onChange={handleChange}
+                                required
+                            />
+                        </label>
+
+                        <div className="Action_Buttons">
+                            <button
+                                type="button"
+                                className="Action_Btn camera-btn"
+                                onClick={() => setModalCameraAberto(true)}
+                            >
+                                <img src={camera_preto_btn} className="icon-default" />
+                                <img src={camera_marelo_btn} className="icon-hover" />
+                                <span>Foto</span>
+                            </button>
+                        </div>
+
+                        <div className="Modal_Btns">
+                            <button
+                                type="submit"
+                                className="Modal_Save_Btn"
+                                disabled={isSaveDisabled}
+                            >
+                                {isSaveDisabled ? (
+                                    <img src={block} />
+                                ) : (
+                                    <>
+                                        <span>Salvar</span>
+                                        <img src={save_marelo_btn} className="icon-default" />
+                                        <img src={save_preto_btn} className="icon-hover" />
+                                    </>
+                                )}
+                            </button>
+
+                            <button
+                                type="button"
+                                className="Modal_Close_Btn"
+                                onClick={onClose}
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                {modalCameraAberto && (
+                    <ModalCamera
+                        fotoAtual={formData.foto}
+                        onClose={() => setModalCameraAberto(false)}
+                        onCapture={(fotoDataURL) => {
+                            setFormData((p) => ({ ...p, foto: fotoDataURL }));
+                            setModalCameraAberto(false);
+
+                            // 🔔 ALERTA DE FOTO SALVA
+                            setAlerta({
+                                message: "Foto salva com sucesso.",
+                                type: "success"
+                            });
+                        }}
+                    />
+                )}
+            </div>
+        </>
     );
 }
+{/*TODO:ADICIONAR O POP-UP DE QUE AO SAIR SEM SALVAR AS ALTERAÇÕES NÃO ESTARÃO SALVAS*/}

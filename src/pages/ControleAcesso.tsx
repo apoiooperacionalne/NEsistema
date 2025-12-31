@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ModalCadastro from "../components/ModalCadastro/ModalCadastro.tsx";
 import ModalEditar from "../components/ModalEdit/ModalEdit.tsx";
+import Alert from "../components/AlertComponent/Alerta.tsx";
 import "./css/ControleAcesso.css";
 import btn_add from "../../src/assets/img/btn_add.png";
 import sync_white from "../../src/assets/img/sync_white.png";
@@ -31,7 +32,12 @@ export default function ControleAcesso() {
 
     const [syncLoading, setSyncLoading] = useState(false);
 
-    const carregarVisitantes = async () => {
+    const [alertCadastro, setAlertCadastro] = useState<AlertState>(null);
+    const [alertSync, setAlertSync] = useState<AlertState>(null);
+    const [alertEdicao, setAlertEdicao] = useState<AlertState>(null);
+
+
+    const carregarVisitantes = async (mostrarAlerta = true) => {
         try {
             setSyncLoading(true);
 
@@ -46,12 +52,23 @@ export default function ControleAcesso() {
             });
 
             setVisitantes(ordenados);
-        } catch (err) {
-            console.error("Erro ao carregar visitantes:", err);
+
+            if (mostrarAlerta) {
+                setAlertSync({
+                    message: "Visitantes sincronizados com sucesso!",
+                    type: "success",
+                });
+            }
+        } catch {
+            setAlertSync({
+                message: "Erro ao carregar visitantes.",
+                type: "error",
+            });
         } finally {
             setSyncLoading(false);
         }
     };
+
 
     useEffect(() => {
         document.title = "Controle de Acesso";
@@ -297,8 +314,15 @@ export default function ControleAcesso() {
             {showCadastro && (
                 <ModalCadastro
                     onClose={() => setShowCadastro(false)}
-                    onSave={carregarVisitantes}
+                    onSave={() => {
+                        carregarVisitantes(false);
+                        setAlertCadastro({
+                            message: "Visitante cadastrado com sucesso!",
+                            type: "success",
+                        });
+                    }}
                 />
+
             )}
 
             {showEditar && visitanteSelecionado && (
@@ -308,9 +332,43 @@ export default function ControleAcesso() {
                         setShowEditar(false);
                         setVisitanteSelecionado(null);
                     }}
-                    onSave={carregarVisitantes}
+                    onSave={() => {
+                        carregarVisitantes(false);
+                        setAlertEdicao({
+                            message: "Cadastro atualizado com sucesso!",
+                            type: "success",
+                        });
+                    }}
+                />
+
+            )}
+
+            {/* ===================== ALERTAS ===================== */}
+            {alertCadastro && (
+                <Alert
+                    message={alertCadastro.message}
+                    type={alertCadastro.type}
+                    onClose={() => setAlertCadastro(null)}
                 />
             )}
+
+            {alertSync && (
+                <Alert
+                    message={alertSync.message}
+                    type={alertSync.type}
+                    onClose={() => setAlertSync(null)}
+                />
+            )}
+
+            {alertEdicao && (
+                <Alert
+                    message={alertEdicao.message}
+                    type={alertEdicao.type}
+                    onClose={() => setAlertEdicao(null)}
+                />
+            )}
+
+
         </div>
     );
 }
